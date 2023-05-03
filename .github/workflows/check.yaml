@@ -1,0 +1,50 @@
+name: check
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        description: Go version
+        type: string
+        required: true
+      golangci-lint-version:
+        description: golangci-lint version
+        type: string
+        required: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ inputs.go-version }}
+          cache: false # by golangci-lint-action
+      - uses: golangci/golangci-lint-action@v3
+        with:
+          version: ${{ inputs.golangci-lint-version }}
+          args: --timeout=3m
+
+  tidy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ inputs.go-version }}
+      - run: go mod tidy
+      - uses: int128/update-generated-files-action@v2
+
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ inputs.go-version }}
+      - run: go fmt ./...
+      - uses: int128/update-generated-files-action@v2
