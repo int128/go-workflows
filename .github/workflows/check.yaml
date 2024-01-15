@@ -6,7 +6,11 @@ on:
       go-version:
         description: Go version
         type: string
-        required: true
+        required: false
+      go-version-file:
+        description: Path to go.mod
+        type: string
+        required: false
       golangci-lint-version:
         description: golangci-lint version
         type: string
@@ -21,6 +25,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
+          go-version-file: ${{ inputs.go-version-file }}
           cache: false # by golangci-lint-action
       - uses: golangci/golangci-lint-action@v3
         with:
@@ -38,6 +43,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
+          go-version-file: ${{ inputs.go-version-file }}
       - run: go mod tidy
       - uses: int128/update-generated-files-action@v2
 
@@ -49,5 +55,6 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
+          go-version-file: ${{ inputs.go-version-file }}
       - run: go fmt ./...
       - uses: int128/update-generated-files-action@v2
