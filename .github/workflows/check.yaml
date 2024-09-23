@@ -11,6 +11,10 @@ on:
         description: Path to go.mod
         type: string
         required: false
+      cache-dependency-path:
+        description: Path to go.sum
+        type: string
+        required: false
       golangci-lint-version:
         description: golangci-lint version
         type: string
@@ -26,6 +30,7 @@ jobs:
         with:
           go-version: ${{ inputs.go-version }}
           go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - uses: golangci/golangci-lint-action@v6
         with:
           version: ${{ inputs.golangci-lint-version }}
@@ -43,6 +48,7 @@ jobs:
         with:
           go-version: ${{ inputs.go-version }}
           go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - run: go mod tidy
       - uses: int128/update-generated-files-action@v2
 
@@ -55,5 +61,6 @@ jobs:
         with:
           go-version: ${{ inputs.go-version }}
           go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - run: go fmt ./...
       - uses: int128/update-generated-files-action@v2
