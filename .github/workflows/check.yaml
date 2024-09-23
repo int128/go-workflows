@@ -3,32 +3,28 @@ name: check
 on:
   workflow_call:
     inputs:
-      go-version:
-        description: Go version
-        type: string
-        required: false
       go-version-file:
         description: Path to go.mod
         type: string
-        required: false
+        required: true
       cache-dependency-path:
         description: Path to go.sum
         type: string
-        required: false
+        required: true
       golangci-lint-version:
         description: golangci-lint version
         type: string
-        required: true
+        required: false
 
 jobs:
   lint:
+    if: inputs.golangci-lint-version
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ inputs.go-version }}
           go-version-file: ${{ inputs.go-version-file }}
           cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - uses: golangci/golangci-lint-action@v6
@@ -46,7 +42,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ inputs.go-version }}
           go-version-file: ${{ inputs.go-version-file }}
           cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - run: go mod tidy
@@ -59,7 +54,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ inputs.go-version }}
           go-version-file: ${{ inputs.go-version-file }}
           cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - run: go fmt ./...
